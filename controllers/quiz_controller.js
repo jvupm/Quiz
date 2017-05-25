@@ -214,7 +214,7 @@ exports.randomplay = function(req, res, next) {
         var score = 0;
         req.session.score = JSON.stringify(score);
     }
-    //var score = req.session.score || 0;
+    
     models.Quiz.findAll()
     .then(function(quizzes){
         var total_quizzes = quizzes.length;
