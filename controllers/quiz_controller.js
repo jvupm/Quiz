@@ -3,6 +3,8 @@ var Sequelize = require('sequelize');
 
 var paginate = require('../helpers/paginate').paginate;
 
+//var session = require('express-session'); 
+
 // Autoload el quiz asociado a :quizId
 exports.load = function (req, res, next, quizId) {
 
@@ -10,6 +12,7 @@ exports.load = function (req, res, next, quizId) {
     .then(function (quiz) {
         if (quiz) {
             req.quiz = quiz;
+            //console.log("Se carga" + quizId + quiz + '');
             next();
         } else {
             throw new Error('No existe ningún quiz con id=' + quizId);
@@ -171,6 +174,7 @@ exports.play = function (req, res, next) {
         quiz: req.quiz,
         answer: answer
     });
+    console.log("En el play sí se carga");
 };
 
 
@@ -187,3 +191,126 @@ exports.check = function (req, res, next) {
         answer: answer
     });
 };
+
+
+//  GET /quizzes/random_play
+exports.randomplay = function(req, res, next) {
+
+    console.log(req.session);
+    var quizIdOk = 1;
+    var no_encontrado = 1;
+    if (req.session.mostrados){
+        var mostrados = JSON.parse(req.session.mostrados);
+    }
+    else {
+        var mostrados = [];
+        req.session.mostrados = JSON.stringify(mostrados);
+    }
+    //var mostrados = req.session.mostrados || [];
+    if(req.session.score){
+        var score = JSON.parse(req.session.score);
+    }
+    else {
+        var score = 0;
+        req.session.score = JSON.stringify(score);
+    }
+    //var score = req.session.score || 0;
+    models.Quiz.findAll()
+    .then(function(quizzes){
+        var total_quizzes = quizzes.length;
+        console.log(total_quizzes);
+        var quizId = Math.round((Math.random()*total_quizzes)%5);
+        do{
+            var quiz = quizzes[quizId];
+            if(quiz){
+                for (var i in mostrados) {
+                    //console.log("En el bucle");
+                    if (mostrados[i] == quizId){
+                        if (total_quizzes == mostrados.length){
+                            quizIdOk = 1;
+                        }
+                        else{
+                            quizIdOk = 0;   
+                            no_encontrado = 1; 
+                        }
+                    }
+                }
+                if(quizIdOk){
+                    if (total_quizzes == mostrados.length){    
+                        console.log("Se han completado todo los quizzes");
+                        console.log(quizId);
+                        console.log(mostrados.length);
+                        req.session.mostrados = JSON.stringify([]);
+                        req.session.score = JSON.stringify(0);
+                        res.render('quizzes/random_nomore', {
+                            score: score
+                        });
+                        quizIdOk = 0;
+                        no_encontrado = 0;
+                    }
+                    else{
+                        mostrados[mostrados.length] = quizId;
+                        req.session.mostrados = JSON.stringify(mostrados);
+                        req.session.score = JSON.stringify(score);
+                        no_encontrado = 0;
+                        console.log("RENDER");
+                        console.log(quizId);
+                        console.log(mostrados.length);
+                        res.render('quizzes/random_play', { 
+                            score: score,
+                            quiz: quiz
+                        });
+                        //console.log(mostrados);
+                        //console.log(req.session);
+                    }
+                }
+                else{
+                    quizId = Math.round(Math.random()*total_quizzes);
+                }
+            }
+            else{
+                quizId = Math.round(Math.random()*total_quizzes);
+                quizIdOk = 1;
+            }
+            
+        }
+        while(no_encontrado)
+    })
+    .catch(function(error) {
+        console.log("Error");
+        next(error);
+    });
+}
+
+// GET /quizzes/randomcheck/:quizId
+exports.randomcheck = function(req, res, next) {
+
+    var answer = req.query.answer || "";
+
+    var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
+ 
+    //console.log(req.session);
+    var mostrados = JSON.parse(req.session.mostrados);
+    var score = JSON.parse(req.session.score);
+    //console.log(mostrados.length);
+
+    if (!result){
+        req.session.mostrados = JSON.stringify([]);
+        score = 0;
+        req.session.score = JSON.stringify(score);
+        res.render('quizzes/random_result', {
+            score: score,
+            answer: answer,
+            result: result
+        });
+    }
+    else {
+        score++;
+        req.session.score = JSON.stringify(score);
+        res.render('quizzes/random_result', {
+            score: score,
+            answer: answer,
+            result: result
+        });
+    }
+}
