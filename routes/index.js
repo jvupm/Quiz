@@ -14,6 +14,7 @@ router.get('/author', function(req, res, next) {
 });
 
 
+
 // Autoload de rutas que usen :quizId
 router.param('quizId', quizController.load);
 
@@ -31,5 +32,11 @@ router.get('/quizzes/:quizId(\\d+)/play',  quizController.play);
 router.get('/quizzes/:quizId(\\d+)/check', quizController.check);
 router.get('/quizzes/random_play', 		   quizController.randomplay);
 router.get('/quizzes/randomcheck/:quizId(\\d+)',	   quizController.randomcheck)
+
+// Pagina de ayuda
+router.get('/help', function(req, res){
+	res.render('Ayuda');
+});
+
 
 module.exports = router;
