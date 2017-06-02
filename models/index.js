@@ -43,8 +43,8 @@ User.hasMany(Quiz, {foreignKey: 'AuthorId'});
 Quiz.belongsTo(User, {as: 'Author', foreignKey: 'AuthorId'});
 
 //Relacción 1 a N entre User y Tip
-User.hasMany(Tip, {foreignKey: 'author'});
-Tip.belongsTo(User, {as: 'Author', foreignKey: 'author'});
+User.hasMany(Tip, {foreignKey: 'AuthorId'});
+Tip.belongsTo(User, {as: 'Author', foreignKey: 'AuthorId'});
 
 
 exports.Quiz = Quiz; // exportar definición de tabla Quiz

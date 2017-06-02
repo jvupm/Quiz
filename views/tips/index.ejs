@@ -5,7 +5,7 @@
         <% var accepted = tip.accepted; %>
         <% var isAdmin = session.user && session.user.isAdmin; %>
         <% var isQuizAuthor = session.user && quizAuthorId && quizAuthorId === session.user.id; %>
-        <% var isTipAuthor = session.user.username && tip.author && session.user.username.toLowerCase().trim() === tip.author.toLowerCase().trim(); %>
+        <% var isTipAuthor = session.user.username && tip.author && tip.AuthorId && session.user.id === tip.AuthorId; %>
 
         <% if (accepted || isAdmin || isQuizAuthor) { %>
 
