@@ -20,6 +20,7 @@ exports.load = function (req, res, next, tipId) {
 };
 
 
+
 // GET /quizzes/:quizId/tips/new
 exports.new = function (req, res, next) {
 
@@ -40,7 +41,8 @@ exports.create = function (req, res, next) {
     var tip = models.Tip.build(
         {
             text: req.body.text,
-            QuizId: req.quiz.id
+            QuizId: req.quiz.id,
+            author: req.body.author
         });
 
     tip.save()
@@ -66,6 +68,18 @@ exports.create = function (req, res, next) {
     });
 };
 
+exports.adminOrAuthorTipRequired = function(req, res, next){
+
+    var isAdmin  = req.session.user.isAdmin;
+    var isAuthor = req.tip.author === req.session.user.username;
+
+    if (isAdmin || isAuthor) {
+        next();
+    } else {
+        console.log('Operación prohibida: El usuario logeado no es el autor del quiz, ni un administrador.');
+        res.send(403);
+    }
+};
 
 // GET /quizzes/:quizId/tips/:tipId/accept
 exports.accept = function (req, res, next) {

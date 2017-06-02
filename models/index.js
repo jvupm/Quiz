@@ -7,7 +7,7 @@ var Sequelize = require('sequelize');
 //    DATABASE_URL = sqlite:///
 //    DATABASE_STORAGE = quiz.sqlite
 // Para usar en Heroku BBDD Postgres:
-//    DATABASE_URL = postgres://user:passwd@host:port/database
+//    DATABASE_URL = postgres:...
 
 var url, storage;
 
@@ -41,6 +41,10 @@ Quiz.hasMany(Tip);
 // Relacion 1 a N entre User y Quiz:
 User.hasMany(Quiz, {foreignKey: 'AuthorId'});
 Quiz.belongsTo(User, {as: 'Author', foreignKey: 'AuthorId'});
+
+//Relacción 1 a N entre User y Tip
+User.hasMany(Tip, {foreignKey: 'author'});
+Tip.belongsTo(User, {as: 'Author', foreignKey: 'author'});
 
 
 exports.Quiz = Quiz; // exportar definición de tabla Quiz

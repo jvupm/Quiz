@@ -19,6 +19,11 @@ module.exports = {
                     type: Sequelize.STRING,
                     validate: {notEmpty: {msg: "Falta el texto de la Pista."}}
                 },
+                author: {
+                    type: Sequelize.STRING,
+                    unique: false,
+                    validate: {notEmpty: {msg: "Falta el autor de la Pista."}}
+                },
                 createdAt: {
                     type: Sequelize.DATE,
                     allowNull: false
