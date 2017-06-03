@@ -12,8 +12,6 @@
               <li>
                   <%= tip.text %>
                   <b><span id="autor"> Autor : <%= tip.author %></b> </span>
-                  <b><span id="autor1"> IdconTip : <%= tipAuthorId %></b> </span>
-                  <b><span id="autor2"> Iduser : <%= session.user.id %></b> </span>
                   <% if (!accepted && (isAdmin || isQuizAuthor)) { %>
                         <a href="/quizzes/<%= quizId %>/tips/<%= tip.id %>/accept?_method=PUT">
                             <button>Aceptar</button>
