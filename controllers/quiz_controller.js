@@ -234,13 +234,7 @@ exports.randomplay = function(req, res, next) {
     console.log(req.session);
     var quizIdOk = 1;
     var no_encontrado = 1;
-    if (req.session.mostrados){
-        var mostrados = JSON.parse(req.session.mostrados);
-    }
-    else {
-        var mostrados = [];
-        req.session.mostrados = JSON.stringify(mostrados);
-    }
+    
     //var mostrados = req.session.mostrados || [];
     if(req.session.score){
         var score = JSON.parse(req.session.score);
@@ -249,7 +243,13 @@ exports.randomplay = function(req, res, next) {
         var score = 0;
         req.session.score = JSON.stringify(score);
     }
-    
+    if (req.session.mostrados && score !== 0){
+        var mostrados = JSON.parse(req.session.mostrados);
+    }
+    else {
+        var mostrados = [];
+        req.session.mostrados = JSON.stringify(mostrados);
+    }
     models.Quiz.findAll()
     .then(function(quizzes){
         var total_quizzes = quizzes.length;
