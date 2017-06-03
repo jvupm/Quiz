@@ -38,11 +38,13 @@ exports.new = function (req, res, next) {
 // POST /quizzes/:quizId/tips
 exports.create = function (req, res, next) {
 
+    var authorId = req.session.user.id;
     var tip = models.Tip.build(
         {
             text: req.body.text,
             QuizId: req.quiz.id,
-            author: req.body.author
+            author: req.body.author,
+            AuthorId: authorId
         });
 
     tip.save()
@@ -71,9 +73,10 @@ exports.create = function (req, res, next) {
 exports.adminOrAuthorTipRequired = function(req, res, next){
 
     var isAdmin  = req.session.user.isAdmin;
-    var isAuthor = req.tip.author === req.session.user.username;
+    var isTipAuthor = req.tip.AuthorId === req.session.user.id;
+    var isAuthor = req.quiz.AuthorId === req.session.user.id;
 
-    if (isAdmin || isAuthor) {
+    if (isAdmin || isAuthor || isTipAuthor) {
         next();
     } else {
         console.log('Operación prohibida: El usuario logeado no es el autor del quiz, ni un administrador.');

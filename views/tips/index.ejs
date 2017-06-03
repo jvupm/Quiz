@@ -1,34 +1,31 @@
 <ul>
     <% for (var i in tips) { %>
         <% var tip = tips[i]; %>
-
+        <% var tipAuthorId = tip.AuthorId; %>
         <% var accepted = tip.accepted; %>
         <% var isAdmin = session.user && session.user.isAdmin; %>
         <% var isQuizAuthor = session.user && quizAuthorId && quizAuthorId === session.user.id; %>
-        <% var isTipAuthor = session.user.username && tip.author && tip.AuthorId && session.user.id === tip.AuthorId; %>
+        <% var isTipAuthor = session.user && session.user.username && tip.author && tipAuthorId && session.user.id === tipAuthorId; %>
 
-        <% if (accepted || isAdmin || isQuizAuthor) { %>
-
-            <li>
-                <%= tip.text %>
-                <b><span id="autor"> Autor : <%= tip.author %></b> </span>
-                <% if (!accepted && (isAdmin || isQuizAuthor)) { %>
-
-                      <a href="/quizzes/<%= quizId %>/tips/<%= tip.id %>/accept?_method=PUT">
-                          <button>Aceptar</button>
-                      </a>
-
-                <% } %>
-
-                <% if (isAdmin || isQuizAuthor || isTipAuthor) { %>
-
-                      <a href="/quizzes/<%= quizId %>/tips/<%= tip.id %>?_method=DELETE">
-                           <button>Borrar</button>
-                      </a>
-
-                <% } %>
-             </li>
-         <% } %>
-
+        <% if (session.user) { %>
+          <% if (accepted || isAdmin || isQuizAuthor) { %>
+              <li>
+                  <%= tip.text %>
+                  <b><span id="autor"> Autor : <%= tip.author %></b> </span>
+                  <b><span id="autor1"> IdconTip : <%= tipAuthorId %></b> </span>
+                  <b><span id="autor2"> Iduser : <%= session.user.id %></b> </span>
+                  <% if (!accepted && (isAdmin || isQuizAuthor)) { %>
+                        <a href="/quizzes/<%= quizId %>/tips/<%= tip.id %>/accept?_method=PUT">
+                            <button>Aceptar</button>
+                        </a>
+                  <% } %>
+                  <% if (isAdmin || isQuizAuthor || isTipAuthor) { %>
+                        <a href="/quizzes/<%= quizId %>/tips/<%= tip.id %>?_method=DELETE">
+                            <button>Borrar</button>
+                        </a>
+                  <% } %>
+              </li>
+          <% } %>
+        <% } %>
     <% } %>
 </ul>
