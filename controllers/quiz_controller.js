@@ -334,7 +334,7 @@ exports.randomcheck = function(req, res, next) {
     if (req.session.score){
         var score = JSON.parse(req.session.score);
     } else {
-        var score = req.quiz.id;
+        var score = 0;
         req.session.score = JSON.stringify(score);
     }
     //console.log(mostrados.length);
