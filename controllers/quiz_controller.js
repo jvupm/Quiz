@@ -321,12 +321,22 @@ exports.randomplay = function(req, res, next) {
 exports.randomcheck = function(req, res, next) {
 
     var answer = req.query.answer || "";
-
+    
     var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
  
     //console.log(req.session);
-    var mostrados = JSON.parse(req.session.mostrados);
-    var score = JSON.parse(req.session.score);
+    if (req.session.mostrados) {
+        var mostrados = JSON.parse(req.session.mostrados);
+    } else {
+        var mostrados = [req.query.quizId];
+        req.session.mostrados = JSON.stringify(mostrados);
+    }
+    if (req.session.score){
+        var score = JSON.parse(req.session.score);
+    } else {
+        var score = req.quiz.id;
+        req.session.score = JSON.stringify(score);
+    }
     //console.log(mostrados.length);
 
     if (!result){

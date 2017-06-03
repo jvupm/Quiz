@@ -7,11 +7,6 @@ module.exports = function (sequelize, DataTypes) {
                 type: DataTypes.STRING,
                 validate: {notEmpty: {msg: "Falta el texto de la Pista."}}
             },
-            author: {
-                type: DataTypes.STRING,
-                validate: {notEmpty: {msg: "Falta el autor de la Pista."}}
-            },
-
             accepted: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false

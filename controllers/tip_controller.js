@@ -39,11 +39,11 @@ exports.new = function (req, res, next) {
 exports.create = function (req, res, next) {
 
     var authorId = req.session.user.id;
+    
     var tip = models.Tip.build(
         {
             text: req.body.text,
             QuizId: req.quiz.id,
-            author: req.body.author,
             AuthorId: authorId
         });
 
